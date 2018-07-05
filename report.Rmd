@@ -1,0 +1,185 @@
+---
+title: "Eyetracking report"
+author: Nick Hedger
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+# Initial plotting.
+
+Summary plot of horizontal gaze position for a single observer.
+
+```{r content,fig.width=12,fig.height=6}
+library(drake)
+readd(PLOT)
+```
+
+# Cleaning summary
+
+### Trackloss Summary.
+
+Proportion trackloss for each observer.
+
+
+```{r}
+tsummary=readd(CLEANED_FRAME)
+tapply(tsummary$trackloss_summary$TracklossForParticipant,tsummary$trackloss_summary$ps,mean)
+```
+
+
+### Applied trackloss criteria.
+
+The following trackloss criteria were applied. We excluded data from participants with more than `r tsummary$criteria[1]` % trackloss and trials with more than `r tsummary$criteria[2]` % trackloss
+
+
+### Percentage of data removed due to trackloss.
+
+Using the above criteria `r tsummary$perc_removed` % of the data were removed.
+
+
+# Time window analysis.
+
+Ascertain whether participants looked longer at one AOI versus another.
+
+### Model summary
+```{r}
+windowsummary=readd(WINDOW_FRAME)
+
+summary(windowsummary$model)
+```
+
+### Main effects.
+```{r}
+windowsummary$modelp
+```
+
+### Interactions.
+
+```{r}
+windowsummary$interactions
+```
+
+### Plot
+
+```{r}
+windowsummary$PLOT
+```
+
+
+### Demographic variables - models.
+
+
+```{r}
+window_env=windowsummary
+
+response_window_agg_by_sub=window_env$FRAME
+
+modlist=ls(window_env)[str_detect(ls(window_env), 'modelp')]
+
+for (i in 1:length(modlist)){
+  print(get(modlist[i],window_env))
+  
+}
+
+```
+
+
+### Demographic variables - plots (not currently working).
+
+```{r}
+
+#modlist=ls(window_env)[str_detect(ls(window_env), 'modeld')]
+
+#for (i in 1:length(modlist)){
+#eff=allEffects(get(modlist[i],window_env))
+#effframe=data.frame(get(ls(eff)[1],eff))
+#effframe$var=get(sub("modeld", "", modlist[i]),effframe)
+
+#x=ggplot(effframe,(aes(x=var,y=fit)))+geom_line(aes(colour=AOI),size=2)+facet_grid(.~sc)+geom_errorbar(aes(ymin=lower,ymax=upper,colour=AOI),size=1,width=3)+ scale_colour_manual(values = c("springgreen3","steelblue2"))+ scale_fill_manual(values = c("springgreen3","steelblue2"))+theme_classic()+ylab("Gaze Proportion")+theme(legend.position = "top")+xlab(sub("modeld", "", modlist[i]))
+#print(x)
+
+#}
+```
+
+
+# Time series Analysis.
+
+Look at the timeseries of gaze bias.
+
+
+### Plot of social bias as a function of time.
+
+```{r}
+ts=readd(TS_FRAME)
+
+ts$TSPLOT
+
+```
+
+
+### Divergence analysis
+
+When is the gaze bias into the social AOI significant?
+
+```{r}
+plotlist=ls(ts)[str_detect(ls(ts), 'TBPLOT')]
+modlist=ls(ts)[str_detect(ls(ts), 'TBA')]
+
+for (i in 1:length(plotlist)){
+print(get(plotlist[i],ts))
+summary(get(modlist[i],ts))
+}
+
+```
+
+
+### Time bin analysis - demographic variables.
+
+At what points in time do the demographic variables predict gaze to the social AOI?
+
+```{r}
+tsdem=readd(TS_DEMO_FRAME)
+
+plotlist=ls(tsdem)[str_detect(ls(tsdem), 'clustplot')]
+modlist=ls(tsdem)[str_detect(ls(tsdem), 'clustfit')]
+
+for (i in 1:length(plotlist)){
+print(get(plotlist[i],tsdem))
+summary(get(modlist[i],tsdem))
+}
+
+```
+
+
+# Switching analysis
+
+### Overall switching behavior
+
+How quickly to observers switch from an initially fixated AOI?
+
+```{r}
+switch=readd(TS_SWITCH_FRAME)
+print(switch$modelp)
+
+multiplot(switch$plotswitchall,switch$plotonseswitchall)
+
+```
+
+
+### Demographics
+
+
+```{r}
+plotlist1=ls(switch)[str_detect(ls(switch), 'dplotswitch')]
+plotlist2=ls(switch)[str_detect(ls(switch), 'dplotonsetswitch')]
+
+modlist=ls(switch)[str_detect(ls(switch), 'dmodelp')]
+
+
+for (i in 1:length(plotlist)){ 
+multiplot(get(plotlist1[i],switch),get(plotlist2[i],switch))
+print(get(modlist[i],switch))
+}
+
+```

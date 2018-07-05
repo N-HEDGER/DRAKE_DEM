@@ -1,0 +1,108 @@
+Loading NT trial matrix...
+Found 30 files 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P1_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P2_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P3_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_4_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_5_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_6_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_7_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_8_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_9_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_10_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_11_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_12b_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_13_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_14_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_15_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_17_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_18_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_19_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_20_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_21_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_22_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_23_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_24_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_25_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_26b_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_27_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_28_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_29_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_30_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_31_summary.txt 
+Loading ASC trial matrix... 
+Found 17 files 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_1_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_2_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_3_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_4_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_5_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_6_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_7_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_8_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_9_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_10b_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_11_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_12_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_13_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_14_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_15_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_16_summary.txt 
+Loading file /Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_17_summary.txt 
+Loading cleaned NT eye-tracking data..Found 30 files 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_001.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_002.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_003.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_004.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_005.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_006.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_007.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_008.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_009.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_010.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_011.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_012.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_013.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_014.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_015.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_017.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_018.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_019.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_020.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_021.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_022.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_023.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_024.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_025.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_026.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_027.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_028.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_029.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_030.csv 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_031.csv 
+Found 17 files 
+Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_101.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_102.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_103.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_104.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_105.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_106.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_107.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_108.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_109.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_110.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_111.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_112.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_113.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_114.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_115.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_116.csv 
+ Loading file /Users/nicholashedger/Google Drive/Grafix/smooth_117.csv 
+ Binding NT data to the trial matrix.. 
+Binding NT data to the trial matrix.. 
+Collecting demographic data.. 
+Collecting demographic data.. 
+Binding the NT and ASC frames together 
+Trimming off the first 1000.000000 msec of data 
+Trimming off anything after 6000.000000 msec 
+Defining AOIsFormatting for eyetrackingR
