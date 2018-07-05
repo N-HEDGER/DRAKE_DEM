@@ -46,7 +46,7 @@ iii) An excel file containing demographic info. Rows are individual subjects, or
 
 ## Load in packages
 
-```{r imports}
+```{r imports,message=FALSE,warning=FALSE,error=FALSE}
 require(drake)
 require(readr)
 require(pracma)
