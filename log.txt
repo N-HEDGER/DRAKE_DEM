@@ -107,3 +107,7 @@ Trimming off the first 1000.000000 msec of data
 Trimming off anything after 6000.000000 msec 
 Defining AOIsFormatting for eyetrackingR
 Cleaning according to trackloss criteria.. 
+Performing time series analyses w demographic variables 
+Performing time series analyses 
+Performing switching analysis 
+Performing time window analyses 

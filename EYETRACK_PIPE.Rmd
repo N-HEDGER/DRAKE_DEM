@@ -263,7 +263,6 @@ GET_NT_SUM <- function(prefixsum,pathsum) {
   filevec=list.files(path=pathsum,pattern=prefixsum,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,1),DATA)
@@ -279,7 +278,6 @@ GET_ASC_SUM <- function(prefixsum,pathsum) {
   filevec=list.files(path=pathsum,pattern=prefixsum,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,2),DATA)
@@ -294,7 +292,6 @@ GET_NT_GRAF <- function(prefixgraf,pathgraf) {
   filevec=list.files(path=pathgraf,pattern=prefixgraf,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,1),DATA)
@@ -309,7 +306,6 @@ GET_ASC_GRAF<- function(prefixgraf,pathgraf) {
   filevec=list.files(path=pathgraf,pattern=prefixgraf,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,2),DATA)
@@ -487,6 +483,7 @@ Performs time-window analyses
 ```{r functions9,message=FALSE,warning=FALSE,error=FALSE}
 
 TIME_WINDOW=function(FRAME,DEMOVARS){
+    fprintf('Performing time window analyses \n',file='log.txt', append = TRUE)
   FRAME=FRAME$CLEANED
   window_env=new.env()
   response_window_agg_by_sub <- make_time_window_data(FRAME, aois=c("NONSOCIAL","SOCIAL"),summarize_by = "ps",predictor_columns = c(c("sc","Group"),DEMOVARS))
@@ -530,7 +527,6 @@ TIME_WINDOW=function(FRAME,DEMOVARS){
     formula1= "Prop ~ AOI"
     for (i in 1:length(DEMOVARS)){
       fixedf=strcat(formula1,strcat('*',DEMOVARS[i]))
-      print(i)
       
       demmod=lmer(formula=formula(paste0(fixedf,"+","(1|ps)")), data = window_env$FRAME)
       assign(strcat('modeld',DEMOVARS[i]), demmod,envir=window_env)
@@ -552,7 +548,8 @@ Performs global time-series analyses.
 TS_ANALYSIS=function(FRAME,binlength){
   FRAME=FRAME$CLEANED
   ts_env=new.env()
-  
+      fprintf('Performing time series analyses \n',file='log.txt', append = TRUE)
+
   if (length(unique(FRAME$sc))==2){
   response_time <- make_time_sequence_data(FRAME, time_bin_size = binlength,aois = c("isinL","isinR"),summarize_by = "ps",predictor_columns = c("sc","side"))
   response_time2 <- make_time_sequence_data(FRAME, time_bin_size = binlength,aois = c("SOCIAL","NONSOCIAL"),summarize_by = "ps",predictor_columns = c("sc","side"))
@@ -597,11 +594,11 @@ Look at the effects of demographic variables on time series.
 
 ```{r functions11,message=FALSE,warning=FALSE,error=FALSE}
 
-
 TS_ANALYSIS_DEMO=function(FRAME,binlength,DEMOVARS,nreps){
   FRAME=FRAME$CLEANED
   ts_env_demo=new.env()
-  
+  fprintf('Performing time series analyses w demographic variables \n',file='log.txt', append = TRUE)
+
   num_sub = length(unique((FRAME$ps)))
   threshold_t = qt(p = 1 - .05/2, df = num_sub-1)
   
@@ -635,7 +632,8 @@ Perform analysis of switch latencies
 TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
   FRAME=FRAME$CLEANED
   ts_env_switch=new.env()
-  
+  fprintf('Performing switching analysis \n',file='log.txt', append = TRUE)
+
   onsets <- make_onset_data(FRAME[FRAME$sc=="Intact",], onset_time = onset_time, fixation_window_length=window_length,target_aoi='SOCIAL',distractor_aoi = 'NONSOCIAL')
   
   assign('plotswitchall',plot(onsets)+theme_classic()+ scale_colour_manual(values = c("springgreen3","steelblue2")),envir=ts_env_switch)
@@ -661,7 +659,6 @@ TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
   
   
   fixedf=strcat(formula1,strcat('*',DEMOVARS[i]))
-  print(i)
   
   demmod=lmer(formula=formula(paste0(fixedf,"+","(1|ps)")), data = onset_switches)
   assign(strcat('dmodeld',DEMOVARS[i]), demmod,envir=ts_env_switch)
@@ -679,7 +676,7 @@ TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
 
 ***
 
-<a id='Workflow'></a>
+<a id='workflow'></a>
 # Define pipeline
 
 ```{r pipeline,message=FALSE,warning=FALSE,error=FALSE}
@@ -714,12 +711,13 @@ plan <- drake_plan(
   )
 
 config <- drake_config(plan)
-vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
+#vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
 
 ```
 
 
-
+<a id='run'></a>
+# Run pipeline
 ```{r pipelinerun,message=FALSE,warning=FALSE,error=FALSE}
 make(plan)
 ```

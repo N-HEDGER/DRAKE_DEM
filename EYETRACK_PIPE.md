@@ -266,7 +266,6 @@ GET_NT_SUM <- function(prefixsum,pathsum) {
   filevec=list.files(path=pathsum,pattern=prefixsum,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,1),DATA)
@@ -282,7 +281,6 @@ GET_ASC_SUM <- function(prefixsum,pathsum) {
   filevec=list.files(path=pathsum,pattern=prefixsum,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,2),DATA)
@@ -297,7 +295,6 @@ GET_NT_GRAF <- function(prefixgraf,pathgraf) {
   filevec=list.files(path=pathgraf,pattern=prefixgraf,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,1),DATA)
@@ -312,7 +309,6 @@ GET_ASC_GRAF<- function(prefixgraf,pathgraf) {
   filevec=list.files(path=pathgraf,pattern=prefixgraf,full.names = TRUE)
   filevec=filevec[order(parse_number(filevec))]
   fprintf('Found %i files \n',length(filevec),file='log.txt', append = TRUE)
-  print(filevec)
   DATA=data.frame()
   for (i in 1:length(filevec)){
     DATA=rbind(cbind(read.table(file=filevec[i], header = FALSE,blank.lines.skip=FALSE,sep=",",fill=TRUE),i,2),DATA)
@@ -489,6 +485,7 @@ Performs time-window analyses
 
 ```r
 TIME_WINDOW=function(FRAME,DEMOVARS){
+    fprintf('Performing time window analyses \n',file='log.txt', append = TRUE)
   FRAME=FRAME$CLEANED
   window_env=new.env()
   response_window_agg_by_sub <- make_time_window_data(FRAME, aois=c("NONSOCIAL","SOCIAL"),summarize_by = "ps",predictor_columns = c(c("sc","Group"),DEMOVARS))
@@ -554,7 +551,8 @@ Performs global time-series analyses.
 TS_ANALYSIS=function(FRAME,binlength){
   FRAME=FRAME$CLEANED
   ts_env=new.env()
-  
+      fprintf('Performing time series analyses \n',file='log.txt', append = TRUE)
+
   if (length(unique(FRAME$sc))==2){
   response_time <- make_time_sequence_data(FRAME, time_bin_size = binlength,aois = c("isinL","isinR"),summarize_by = "ps",predictor_columns = c("sc","side"))
   response_time2 <- make_time_sequence_data(FRAME, time_bin_size = binlength,aois = c("SOCIAL","NONSOCIAL"),summarize_by = "ps",predictor_columns = c("sc","side"))
@@ -601,7 +599,8 @@ Look at the effects of demographic variables on time series.
 TS_ANALYSIS_DEMO=function(FRAME,binlength,DEMOVARS,nreps){
   FRAME=FRAME$CLEANED
   ts_env_demo=new.env()
-  
+  fprintf('Performing time series analyses w demographic variables \n',file='log.txt', append = TRUE)
+
   num_sub = length(unique((FRAME$ps)))
   threshold_t = qt(p = 1 - .05/2, df = num_sub-1)
   
@@ -635,7 +634,8 @@ Perform analysis of switch latencies
 TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
   FRAME=FRAME$CLEANED
   ts_env_switch=new.env()
-  
+  fprintf('Performing switching analysis \n',file='log.txt', append = TRUE)
+
   onsets <- make_onset_data(FRAME[FRAME$sc=="Intact",], onset_time = onset_time, fixation_window_length=window_length,target_aoi='SOCIAL',distractor_aoi = 'NONSOCIAL')
   
   assign('plotswitchall',plot(onsets)+theme_classic()+ scale_colour_manual(values = c("springgreen3","steelblue2")),envir=ts_env_switch)
@@ -679,7 +679,7 @@ TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
 
 ***
 
-<a id='Workflow'></a>
+<a id='workflow'></a>
 # Define pipeline
 
 
@@ -715,115 +715,19 @@ plan <- drake_plan(
   )
 
 config <- drake_config(plan)
-vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
+#vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
 ```
 
-<!--html_preserve--><div id="htmlwidget-ec897849c5c50a6f7846" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ec897849c5c50a6f7846">{"x":{"nodes":{"id":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\""],"label":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\""],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"type":["object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","file"],"font.size":[20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20],"color":["#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","square"],"level":[1,1,1,1,2,1,2,1,3,3,4,5,6,7,7,8,8,8,8,9],"hover_label":["GET_NT_SUM(const$PrefixsumNT, const$Sumpath)","GET_NT_GRAF(const$PrefixgrafNT, const$Grafpath)","GET_ASC_SUM(const$PrefixsumASC, const$Sumpath)","GET_ASC_GRAF(const$PrefixgrafASC, const$Grafpath)","BIND_VARS(raw_data_NT, raw_data_NT_GRAF, const$colnames)","GET_FILEVEC(const$PrefixsumNT, const$Sumpath)","BIND_VARS(raw_data_ASC, raw_data_ASC_GRAF, const$colnames)","GET_FILEVEC(const$PrefixsumASC, const$Sumpath)","GET_DEMO(const$Demopath, const$PrefixdemoASC, bound_data_ASC,\nfilevec_ASC, const$DEMOVARS)","GET_DEMO(const$Demopath, const$PrefixdemoNT, bound_data_NT,\nfilevec_NT, const$DEMOVARS)","APPEND_DATA(DEMOFRAME_NT, DEMOFRAME_ASC, filevec_NT)","DEFINE_AOI(FRAME, AOIdef$rectlxmin, AOIdef$rectlxmax,\nAOIdef$rectlymin, AOIdef$rectlymax, AOIdef$rectrxmin,\nAOIdef$rectrxmax, AOIdef$rectrymin, AOIdef$rectrymax,\nformatdef$TRIML, formatdef$TRIMU)","FORMAT(AOI_FRAME, formatdef$missing_dat)","CLEAN_TRACK(EYETRACK_FRAME, cleandef$part_prop,\ncleandef$trial_prop)","MAKE_PLOT(EYETRACK_FRAME, AOIdef$rectlxmin, AOIdef$rectlxmax,\nAOIdef$rectlymin, AOIdef$rectlymax, AOIdef$rectrxmin,\nAOIdef$rectrxmax, AOIdef$rectrymin, AOIdef$rectrymax, AOIdef$resx,\nAOIdef$resy)","TS_ANALYSIS_DEMO(CLEANED_FRAME, analysis$binlength,\nconst$DEMOVARS, analysis$nreps)","TS_ANALYSIS(CLEANED_FRAME, analysis$binlength)","TS_ANALYSIS_SWITCH(CLEANED_FRAME, analysis$onset_time,\nanalysis$windowlength, const$DEMOVARS)","TIME_WINDOW(CLEANED_FRAME, const$DEMOVARS)","rmarkdown::render(knitr_in(\"report.Rmd\"), output_file =\nfile_out(\"report.html\"), quiet = TRUE)"],"x":[-1,-0.666666666666667,-0.333333333333333,0,-0.666666666666667,0.5,0.333333333333333,1,0.5,-0.333333333333333,0.5,0.5,0.5,0.166666666666667,0.833333333333333,-0.833333333333333,-0.5,-0.166666666666667,0.166666666666667,0.5],"y":[-1,-1,-1,-1,-0.75,-1,-0.75,-1,-0.5,-0.5,-0.25,0,0.25,0.5,0.5,0.75,0.75,0.75,0.75,1]},"edges":{"from":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","EYETRACK_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME"],"to":["bound_data_NT","bound_data_NT","bound_data_ASC","bound_data_ASC","DEMOFRAME_NT","DEMOFRAME_NT","FRAME","DEMOFRAME_ASC","DEMOFRAME_ASC","FRAME","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\"","\"report.html\"","\"report.html\"","\"report.html\"","\"report.html\"","\"report.html\""],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"layout":{"hierarchical":{"enabled":true,"direction":"UD"}},"edges":{"smooth":false},"physics":{"stabilization":false},"interaction":{"navigationButtons":true,"hover":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":{"text":"Dependency graph","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Outdated","In progress","Failed","Imported","Missing","Object","Function","File"],"color":["#228B22","#000000","#FF7221","#AA0000","#1874CD","#9A32CD","#888888","#888888","#888888"],"shape":["dot","dot","dot","dot","dot","dot","dot","triangle","square"],"font.color":["black","black","black","black","black","black","black","black","black"],"font.size":[20,20,20,20,20,20,20,20,20],"id":[1,2,3,4,5,6,7,8,9]},"nodesToDataframe":true},"igraphlayout":{"type":"square"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","events":{"hoverNode":"function(e){\n        var label_info = this.body.data.nodes.get({\n          fields: ['label', 'hover_label'],\n          filter: function (item) {\n            return item.id === e.node\n          },\n          returnType :'Array'\n        });\n        this.body.data.nodes.update({\n          id: e.node,\n          label : label_info[0].hover_label,\n          hover_label : label_info[0].label\n        });\n      }","blurNode":"function(e){\n        var label_info = this.body.data.nodes.get({\n          fields: ['label', 'hover_label'],\n          filter: function (item) {\n            return item.id === e.node\n          },\n          returnType :'Array'\n        });\n        this.body.data.nodes.update({\n          id: e.node,\n          label : label_info[0].hover_label,\n          hover_label : label_info[0].label\n        });\n      }"}},"evals":["events.hoverNode","events.blurNode"],"jsHooks":[]}</script><!--/html_preserve-->
 
-
-
+<a id='run'></a>
+# Run pipeline
 
 ```r
 make(plan)
 ```
 
 ```
-##  [1] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P1_summary.txt"   
-##  [2] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P2_summary.txt"   
-##  [3] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P3_summary.txt"   
-##  [4] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_4_summary.txt"  
-##  [5] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_5_summary.txt"  
-##  [6] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_6_summary.txt"  
-##  [7] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_7_summary.txt"  
-##  [8] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_8_summary.txt"  
-##  [9] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_9_summary.txt"  
-## [10] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_10_summary.txt" 
-## [11] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_11_summary.txt" 
-## [12] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_12b_summary.txt"
-## [13] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_13_summary.txt" 
-## [14] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_14_summary.txt" 
-## [15] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_15_summary.txt" 
-## [16] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_17_summary.txt" 
-## [17] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_18_summary.txt" 
-## [18] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_19_summary.txt" 
-## [19] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_20_summary.txt" 
-## [20] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_21_summary.txt" 
-## [21] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_22_summary.txt" 
-## [22] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_23_summary.txt" 
-## [23] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_24_summary.txt" 
-## [24] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_25_summary.txt" 
-## [25] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_26b_summary.txt"
-## [26] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_27_summary.txt" 
-## [27] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_28_summary.txt" 
-## [28] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_29_summary.txt" 
-## [29] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_30_summary.txt" 
-## [30] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/P_31_summary.txt" 
-##  [1] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_1_summary.txt"  
-##  [2] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_2_summary.txt"  
-##  [3] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_3_summary.txt"  
-##  [4] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_4_summary.txt"  
-##  [5] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_5_summary.txt"  
-##  [6] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_6_summary.txt"  
-##  [7] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_7_summary.txt"  
-##  [8] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_8_summary.txt"  
-##  [9] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_9_summary.txt"  
-## [10] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_10b_summary.txt"
-## [11] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_11_summary.txt" 
-## [12] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_12_summary.txt" 
-## [13] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_13_summary.txt" 
-## [14] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_14_summary.txt" 
-## [15] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_15_summary.txt" 
-## [16] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_16_summary.txt" 
-## [17] "/Users/nicholashedger/Google Drive/EYETRACK_DATA/FREEVIEW/A_17_summary.txt" 
-##  [1] "/Users/nicholashedger/Google Drive/Grafix/smooth_001.csv"
-##  [2] "/Users/nicholashedger/Google Drive/Grafix/smooth_002.csv"
-##  [3] "/Users/nicholashedger/Google Drive/Grafix/smooth_003.csv"
-##  [4] "/Users/nicholashedger/Google Drive/Grafix/smooth_004.csv"
-##  [5] "/Users/nicholashedger/Google Drive/Grafix/smooth_005.csv"
-##  [6] "/Users/nicholashedger/Google Drive/Grafix/smooth_006.csv"
-##  [7] "/Users/nicholashedger/Google Drive/Grafix/smooth_007.csv"
-##  [8] "/Users/nicholashedger/Google Drive/Grafix/smooth_008.csv"
-##  [9] "/Users/nicholashedger/Google Drive/Grafix/smooth_009.csv"
-## [10] "/Users/nicholashedger/Google Drive/Grafix/smooth_010.csv"
-## [11] "/Users/nicholashedger/Google Drive/Grafix/smooth_011.csv"
-## [12] "/Users/nicholashedger/Google Drive/Grafix/smooth_012.csv"
-## [13] "/Users/nicholashedger/Google Drive/Grafix/smooth_013.csv"
-## [14] "/Users/nicholashedger/Google Drive/Grafix/smooth_014.csv"
-## [15] "/Users/nicholashedger/Google Drive/Grafix/smooth_015.csv"
-## [16] "/Users/nicholashedger/Google Drive/Grafix/smooth_017.csv"
-## [17] "/Users/nicholashedger/Google Drive/Grafix/smooth_018.csv"
-## [18] "/Users/nicholashedger/Google Drive/Grafix/smooth_019.csv"
-## [19] "/Users/nicholashedger/Google Drive/Grafix/smooth_020.csv"
-## [20] "/Users/nicholashedger/Google Drive/Grafix/smooth_021.csv"
-## [21] "/Users/nicholashedger/Google Drive/Grafix/smooth_022.csv"
-## [22] "/Users/nicholashedger/Google Drive/Grafix/smooth_023.csv"
-## [23] "/Users/nicholashedger/Google Drive/Grafix/smooth_024.csv"
-## [24] "/Users/nicholashedger/Google Drive/Grafix/smooth_025.csv"
-## [25] "/Users/nicholashedger/Google Drive/Grafix/smooth_026.csv"
-## [26] "/Users/nicholashedger/Google Drive/Grafix/smooth_027.csv"
-## [27] "/Users/nicholashedger/Google Drive/Grafix/smooth_028.csv"
-## [28] "/Users/nicholashedger/Google Drive/Grafix/smooth_029.csv"
-## [29] "/Users/nicholashedger/Google Drive/Grafix/smooth_030.csv"
-## [30] "/Users/nicholashedger/Google Drive/Grafix/smooth_031.csv"
 ## Loading cleaned ASC eye-tracking data.. 
-##  [1] "/Users/nicholashedger/Google Drive/Grafix/smooth_101.csv"
-##  [2] "/Users/nicholashedger/Google Drive/Grafix/smooth_102.csv"
-##  [3] "/Users/nicholashedger/Google Drive/Grafix/smooth_103.csv"
-##  [4] "/Users/nicholashedger/Google Drive/Grafix/smooth_104.csv"
-##  [5] "/Users/nicholashedger/Google Drive/Grafix/smooth_105.csv"
-##  [6] "/Users/nicholashedger/Google Drive/Grafix/smooth_106.csv"
-##  [7] "/Users/nicholashedger/Google Drive/Grafix/smooth_107.csv"
-##  [8] "/Users/nicholashedger/Google Drive/Grafix/smooth_108.csv"
-##  [9] "/Users/nicholashedger/Google Drive/Grafix/smooth_109.csv"
-## [10] "/Users/nicholashedger/Google Drive/Grafix/smooth_110.csv"
-## [11] "/Users/nicholashedger/Google Drive/Grafix/smooth_111.csv"
-## [12] "/Users/nicholashedger/Google Drive/Grafix/smooth_112.csv"
-## [13] "/Users/nicholashedger/Google Drive/Grafix/smooth_113.csv"
-## [14] "/Users/nicholashedger/Google Drive/Grafix/smooth_114.csv"
-## [15] "/Users/nicholashedger/Google Drive/Grafix/smooth_115.csv"
-## [16] "/Users/nicholashedger/Google Drive/Grafix/smooth_116.csv"
-## [17] "/Users/nicholashedger/Google Drive/Grafix/smooth_117.csv"
 ##     
 ##          1     2
 ##   1  21598     0
