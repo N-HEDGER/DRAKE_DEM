@@ -375,7 +375,6 @@ APPEND_DATA=function(NTFRAME,ASCFRAME,filevec) {
   fprintf('Binding the NT and ASC frames together \n',file='log.txt', append = TRUE)
   ASCFRAME$ps=ASCFRAME$ps+length(filevec)
   DATA=rbind(NTFRAME,ASCFRAME)
-  print(table(DATA$ps,DATA$Group))
   return(DATA)
 }
 ```
@@ -509,7 +508,6 @@ TIME_WINDOW=function(FRAME,DEMOVARS){
   formula1= "Prop ~ AOI*sc"
   for (i in 1:length(DEMOVARS)){
     fixedf=strcat(formula1,strcat('*',DEMOVARS[i]))
-  print(i)
     
   demmod=lmer(formula=formula(paste0(fixedf,"+","(1|ps)")), data = window_env$FRAME)
   assign(strcat('modeld',DEMOVARS[i]), demmod,envir=window_env)
@@ -529,7 +527,6 @@ TIME_WINDOW=function(FRAME,DEMOVARS){
     formula1= "Prop ~ AOI"
     for (i in 1:length(DEMOVARS)){
       fixedf=strcat(formula1,strcat('*',DEMOVARS[i]))
-      print(i)
       
       demmod=lmer(formula=formula(paste0(fixedf,"+","(1|ps)")), data = window_env$FRAME)
       assign(strcat('modeld',DEMOVARS[i]), demmod,envir=window_env)
@@ -661,7 +658,6 @@ TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
   
   
   fixedf=strcat(formula1,strcat('*',DEMOVARS[i]))
-  print(i)
   
   demmod=lmer(formula=formula(paste0(fixedf,"+","(1|ps)")), data = onset_switches)
   assign(strcat('dmodeld',DEMOVARS[i]), demmod,envir=ts_env_switch)
@@ -728,69 +724,16 @@ make(plan)
 
 ```
 ## Loading cleaned ASC eye-tracking data.. 
-##     
-##          1     2
-##   1  21598     0
-##   2  21560     0
-##   3  21591     0
-##   4  21605     0
-##   5  21615     0
-##   6  21599     0
-##   7  21588     0
-##   8  21600     0
-##   9  21586     0
-##   10 21591     0
-##   11 21596     0
-##   12 21580     0
-##   13 21599     0
-##   14 21607     0
-##   15 21600     0
-##   16 21596     0
-##   17 21600     0
-##   18 21583     0
-##   19 21611     0
-##   20 21610     0
-##   21 21622     0
-##   22 21589     0
-##   23 21595     0
-##   24 21601     0
-##   25 21590     0
-##   26 21606     0
-##   27 21604     0
-##   28 21599     0
-##   29 21600     0
-##   30 21589     0
-##   31     0 21601
-##   32     0 21596
-##   33     0 21613
-##   34     0 21606
-##   35     0 21611
-##   36     0 21594
-##   37     0 21587
-##   38     0 21597
-##   39     0 21609
-##   40     0 21606
-##   41     0 21596
-##   42     0 21606
-##   43     0 21574
-##   44     0 21595
-##   45     0 21582
-##   46     0 21594
-##   47     0 21580
 ## Fitting 2 (g)lmer() models:
 ## [..]
-## [1] 1
-## Fitting 4 (g)lmer() models:
-## [....]
-## [1] 2
 ## Fitting 4 (g)lmer() models:
 ## [....]
 ## Fitting 4 (g)lmer() models:
 ## [....]
-## [1] 1
+## Fitting 4 (g)lmer() models:
+## [....]
 ## Fitting 8 (g)lmer() models:
 ## [........]
-## [1] 2
 ## Fitting 8 (g)lmer() models:
 ## [........]
 ```

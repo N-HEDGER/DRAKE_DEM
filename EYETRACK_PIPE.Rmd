@@ -372,7 +372,6 @@ APPEND_DATA=function(NTFRAME,ASCFRAME,filevec) {
   fprintf('Binding the NT and ASC frames together \n',file='log.txt', append = TRUE)
   ASCFRAME$ps=ASCFRAME$ps+length(filevec)
   DATA=rbind(NTFRAME,ASCFRAME)
-  print(table(DATA$ps,DATA$Group))
   return(DATA)
 }
 
@@ -507,7 +506,6 @@ TIME_WINDOW=function(FRAME,DEMOVARS){
   formula1= "Prop ~ AOI*sc"
   for (i in 1:length(DEMOVARS)){
     fixedf=strcat(formula1,strcat('*',DEMOVARS[i]))
-  print(i)
     
   demmod=lmer(formula=formula(paste0(fixedf,"+","(1|ps)")), data = window_env$FRAME)
   assign(strcat('modeld',DEMOVARS[i]), demmod,envir=window_env)
