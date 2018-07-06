@@ -42,7 +42,7 @@ Pipeline for analysing eyetracking data output from MATLAB experiment.
 1. You will need to install all the packages listed in the [following](#import) section.
 2. A directory of 'summary files' - the 'summary.txt' files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.
 3. A directory of 'Grafix files' - these are the cleaned .csv files output from Grafix. Grafix only allows numeric names, so 001 for NT and 101 for ASC etc
-4. An excel file containing demographic info. Rows are individual subjects, ordered in the same way as i). Columns are different demographic variables (EQ, AQ etc).
+4. An excel file containing demographic info. Rows are individual subjects, ordered in the same way as the files in 2). Columns are different demographic variables (EQ, AQ etc).
 
 ***
 
@@ -348,10 +348,10 @@ GET_DEMO=function(demopath,demoprefix,frame,filevec,DEMONAMES) {
   for (i in 1:length(DEMONAMES)){
     
     if (DEMONAMES[i]=="Gender"){
-      vec=as.character(get(DEMONAMES[i],DEMOFRAME))[order(parse_number(filevec))]
+      vec=as.character(get(DEMONAMES[i],DEMOFRAME))
     }
     else{
-      vec=as.numeric(as.character(get(DEMONAMES[i],DEMOFRAME)))[sort(parse_number(filevec))]
+      vec=as.numeric(as.character(get(DEMONAMES[i],DEMOFRAME)))
     }
     
     for (j in 1:length(unique(frame2$ps))){
@@ -443,11 +443,22 @@ FORMAT <- function(FRAME,missing_dat) {
 }
 ```
 
-Makes a plot of the first observers data.
+Makes some summary plots of the observer's data.
 
 ```{r functions7,message=FALSE,warning=FALSE,error=FALSE}
 MAKE_PLOT <- function(FRAME,rectlxmin,rectlxmax,rectlymin,rectlymax,rectrxmin,rectrxmax,rectrymin,rectrymax,resx,resy) {
-  ggplot(FRAME[FRAME$ps==1 & FRAME$sc=="Intact",],aes(x=Timestamp,y=XSMOOTH))+geom_vline(aes(xintercept=Timestamp,colour=trackloss),alpha=.1)+geom_point(aes(colour=side))+facet_wrap(~Trial,ncol=5)+theme_classic()+ scale_colour_manual(values = c("white","springgreen3","steelblue2","pink"))
+  plotenv=new.env()
+  
+  for (i in 1:length(unique(FRAME$ps))){
+  tmpplot=ggplot(FRAME[FRAME$ps==i & FRAME$sc=="Intact",],aes(x=Timestamp,y=XSMOOTH))+geom_vline(aes(xintercept=Timestamp,colour=trackloss),alpha=.1)+geom_point(aes(colour=side))+facet_wrap(~Trial,ncol=5)+theme_classic()+ scale_colour_manual(values = c("white","springgreen3","steelblue2","pink"))+ggtitle(num2str(i))
+  
+tmpplot2=ggplot(FRAME[FRAME$ps==i,],aes(x=XSMOOTH,y=YSMOOTH))+geom_rect(xmin=rectlxmin,xmax=rectlxmax,ymin=rectlymin,ymax=rectlymax)+geom_rect(xmin=rectrxmin,xmax=rectrxmax,ymin=rectrymin,ymax=rectrymax)+geom_point(colour="pink",alpha=.2)+theme_classic()+ scale_colour_manual(values = c("white","springgreen3","steelblue2","pink"))+ggtitle(num2str(i))+ylim(c(300,resy-300))+xlim(c(200,resx-200))
+  
+  
+  assign(strcat('XPLOT_P_',as.character(i)),tmpplot,envir=plotenv)
+  assign(strcat('XYPLOT_P_',as.character(i)),tmpplot2,envir=plotenv)
+  }
+  return(plotenv)
 }
 
 ```
@@ -705,11 +716,17 @@ plan <- drake_plan(
     knitr_in("report.Rmd"),
     output_file = file_out("report.html"),
     quiet = TRUE
+  ),
+    rmarkdown::render(
+    knitr_in("Pplots.Rmd"),
+    output_file = file_out("Pplots.html"),
+    quiet = TRUE
   )
+  
   )
 
 config <- drake_config(plan)
-#vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
+vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
 
 ```
 

@@ -1,0 +1,21 @@
+---
+title: "Pplots"
+author: "Nick Hedger"
+date: "06/07/2018"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r content,fig.width=12,fig.height=6}
+library(drake)
+plot_env=readd(PLOT)
+
+plist=ls(plot_env)[str_detect(ls(plot_env), 'XPLOT')]
+plist2=ls(plot_env)[str_detect(ls(plot_env), 'XYPLOT')]
+
+for (i in 1:length(plist)){
+print(get(plist[i],plot_env))
+print(get(plist2[i],plot_env))
+}
+```

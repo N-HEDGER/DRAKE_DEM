@@ -26,7 +26,11 @@ Summary plot of horizontal gaze position for a single observer.
 
 ```r
 library(drake)
-readd(PLOT)
+plot_env=readd(PLOT)
+
+plist=ls(plot_env)
+
+print(get(plist[1],plot_env))
 ```
 
 ![](report_files/figure-html/content-1.png)<!-- -->

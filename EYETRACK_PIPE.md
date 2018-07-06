@@ -42,7 +42,7 @@ Pipeline for analysing eyetracking data output from MATLAB experiment.
 1. You will need to install all the packages listed in the [following](#import) section.
 2. A directory of 'summary files' - the 'summary.txt' files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.
 3. A directory of 'Grafix files' - these are the cleaned .csv files output from Grafix. Grafix only allows numeric names, so 001 for NT and 101 for ASC etc
-4. An excel file containing demographic info. Rows are individual subjects, ordered in the same way as i). Columns are different demographic variables (EQ, AQ etc).
+4. An excel file containing demographic info. Rows are individual subjects, ordered in the same way as the files in 2). Columns are different demographic variables (EQ, AQ etc).
 
 ***
 
@@ -351,10 +351,10 @@ GET_DEMO=function(demopath,demoprefix,frame,filevec,DEMONAMES) {
   for (i in 1:length(DEMONAMES)){
     
     if (DEMONAMES[i]=="Gender"){
-      vec=as.character(get(DEMONAMES[i],DEMOFRAME))[order(parse_number(filevec))]
+      vec=as.character(get(DEMONAMES[i],DEMOFRAME))
     }
     else{
-      vec=as.numeric(as.character(get(DEMONAMES[i],DEMOFRAME)))[sort(parse_number(filevec))]
+      vec=as.numeric(as.character(get(DEMONAMES[i],DEMOFRAME)))
     }
     
     for (j in 1:length(unique(frame2$ps))){
@@ -445,12 +445,23 @@ FORMAT <- function(FRAME,missing_dat) {
 }
 ```
 
-Makes a plot of the first observers data.
+Makes some summary plots of the observer's data.
 
 
 ```r
 MAKE_PLOT <- function(FRAME,rectlxmin,rectlxmax,rectlymin,rectlymax,rectrxmin,rectrxmax,rectrymin,rectrymax,resx,resy) {
-  ggplot(FRAME[FRAME$ps==1 & FRAME$sc=="Intact",],aes(x=Timestamp,y=XSMOOTH))+geom_vline(aes(xintercept=Timestamp,colour=trackloss),alpha=.1)+geom_point(aes(colour=side))+facet_wrap(~Trial,ncol=5)+theme_classic()+ scale_colour_manual(values = c("white","springgreen3","steelblue2","pink"))
+  plotenv=new.env()
+  
+  for (i in 1:length(unique(FRAME$ps))){
+  tmpplot=ggplot(FRAME[FRAME$ps==i & FRAME$sc=="Intact",],aes(x=Timestamp,y=XSMOOTH))+geom_vline(aes(xintercept=Timestamp,colour=trackloss),alpha=.1)+geom_point(aes(colour=side))+facet_wrap(~Trial,ncol=5)+theme_classic()+ scale_colour_manual(values = c("white","springgreen3","steelblue2","pink"))+ggtitle(num2str(i))
+  
+tmpplot2=ggplot(FRAME[FRAME$ps==i,],aes(x=XSMOOTH,y=YSMOOTH))+geom_rect(xmin=rectlxmin,xmax=rectlxmax,ymin=rectlymin,ymax=rectlymax)+geom_rect(xmin=rectrxmin,xmax=rectrxmax,ymin=rectrymin,ymax=rectrymax)+geom_point(colour="pink",alpha=.2)+theme_classic()+ scale_colour_manual(values = c("white","springgreen3","steelblue2","pink"))+ggtitle(num2str(i))+ylim(c(300,resy-300))+xlim(c(200,resx-200))
+  
+  
+  assign(strcat('XPLOT_P_',as.character(i)),tmpplot,envir=plotenv)
+  assign(strcat('XYPLOT_P_',as.character(i)),tmpplot2,envir=plotenv)
+  }
+  return(plotenv)
 }
 ```
 
@@ -707,12 +718,21 @@ plan <- drake_plan(
     knitr_in("report.Rmd"),
     output_file = file_out("report.html"),
     quiet = TRUE
+  ),
+    rmarkdown::render(
+    knitr_in("Pplots.Rmd"),
+    output_file = file_out("Pplots.html"),
+    quiet = TRUE
   )
+  
   )
 
 config <- drake_config(plan)
-#vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
+vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
 ```
+
+<!--html_preserve--><div id="htmlwidget-ec897849c5c50a6f7846" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ec897849c5c50a6f7846">{"x":{"nodes":{"id":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\"","\"Pplots.html\""],"label":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\"","\"Pplots.html\""],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"type":["object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","file","file"],"font.size":[20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20],"color":["#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","square","square"],"level":[1,1,1,1,2,1,2,1,3,3,4,5,6,7,7,8,8,8,8,9,8],"hover_label":["GET_NT_SUM(const$PrefixsumNT, const$Sumpath)","GET_NT_GRAF(const$PrefixgrafNT, const$Grafpath)","GET_ASC_SUM(const$PrefixsumASC, const$Sumpath)","GET_ASC_GRAF(const$PrefixgrafASC, const$Grafpath)","BIND_VARS(raw_data_NT, raw_data_NT_GRAF, const$colnames)","GET_FILEVEC(const$PrefixsumNT, const$Sumpath)","BIND_VARS(raw_data_ASC, raw_data_ASC_GRAF, const$colnames)","GET_FILEVEC(const$PrefixsumASC, const$Sumpath)","GET_DEMO(const$Demopath, const$PrefixdemoASC, bound_data_ASC,\nfilevec_ASC, const$DEMOVARS)","GET_DEMO(const$Demopath, const$PrefixdemoNT, bound_data_NT,\nfilevec_NT, const$DEMOVARS)","APPEND_DATA(DEMOFRAME_NT, DEMOFRAME_ASC, filevec_NT)","DEFINE_AOI(FRAME, AOIdef$rectlxmin, AOIdef$rectlxmax,\nAOIdef$rectlymin, AOIdef$rectlymax, AOIdef$rectrxmin,\nAOIdef$rectrxmax, AOIdef$rectrymin, AOIdef$rectrymax,\nformatdef$TRIML, formatdef$TRIMU)","FORMAT(AOI_FRAME, formatdef$missing_dat)","CLEAN_TRACK(EYETRACK_FRAME, cleandef$part_prop,\ncleandef$trial_prop)","MAKE_PLOT(EYETRACK_FRAME, AOIdef$rectlxmin, AOIdef$rectlxmax,\nAOIdef$rectlymin, AOIdef$rectlymax, AOIdef$rectrxmin,\nAOIdef$rectrxmax, AOIdef$rectrymin, AOIdef$rectrymax, AOIdef$resx,\nAOIdef$resy)","TS_ANALYSIS_DEMO(CLEANED_FRAME, analysis$binlength,\nconst$DEMOVARS, analysis$nreps)","TS_ANALYSIS(CLEANED_FRAME, analysis$binlength)","TS_ANALYSIS_SWITCH(CLEANED_FRAME, analysis$onset_time,\nanalysis$windowlength, const$DEMOVARS)","TIME_WINDOW(CLEANED_FRAME, const$DEMOVARS)","rmarkdown::render(knitr_in(\"report.Rmd\"), output_file =\nfile_out(\"report.html\"), quiet = TRUE)","rmarkdown::render(knitr_in(\"Pplots.Rmd\"), output_file =\nfile_out(\"Pplots.html\"), quiet = TRUE)"],"x":[-1,-0.666666666666667,-0.333333333333333,0,-0.666666666666667,0.5,0.333333333333333,1,0.5,-0.333333333333333,0.5,0.5,0.5,-0.166666666666667,0.833333333333333,-1,-0.666666666666667,-0.333333333333333,0,0.166666666666667,1],"y":[-1,-1,-1,-1,-0.75,-1,-0.75,-1,-0.5,-0.5,-0.25,0,0.25,0.5,0.5,0.75,0.75,0.75,0.75,1,0.75]},"edges":{"from":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","EYETRACK_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","PLOT","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME"],"to":["bound_data_NT","bound_data_NT","bound_data_ASC","bound_data_ASC","DEMOFRAME_NT","DEMOFRAME_NT","FRAME","DEMOFRAME_ASC","DEMOFRAME_ASC","FRAME","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\"","\"report.html\"","\"Pplots.html\"","\"report.html\"","\"report.html\"","\"report.html\"","\"report.html\""],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"layout":{"hierarchical":{"enabled":true,"direction":"UD"}},"edges":{"smooth":false},"physics":{"stabilization":false},"interaction":{"navigationButtons":true,"hover":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":{"text":"Dependency graph","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Outdated","In progress","Failed","Imported","Missing","Object","Function","File"],"color":["#228B22","#000000","#FF7221","#AA0000","#1874CD","#9A32CD","#888888","#888888","#888888"],"shape":["dot","dot","dot","dot","dot","dot","dot","triangle","square"],"font.color":["black","black","black","black","black","black","black","black","black"],"font.size":[20,20,20,20,20,20,20,20,20],"id":[1,2,3,4,5,6,7,8,9]},"nodesToDataframe":true},"igraphlayout":{"type":"square"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","events":{"hoverNode":"function(e){\n        var label_info = this.body.data.nodes.get({\n          fields: ['label', 'hover_label'],\n          filter: function (item) {\n            return item.id === e.node\n          },\n          returnType :'Array'\n        });\n        this.body.data.nodes.update({\n          id: e.node,\n          label : label_info[0].hover_label,\n          hover_label : label_info[0].label\n        });\n      }","blurNode":"function(e){\n        var label_info = this.body.data.nodes.get({\n          fields: ['label', 'hover_label'],\n          filter: function (item) {\n            return item.id === e.node\n          },\n          returnType :'Array'\n        });\n        this.body.data.nodes.update({\n          id: e.node,\n          label : label_info[0].hover_label,\n          hover_label : label_info[0].label\n        });\n      }"}},"evals":["events.hoverNode","events.blurNode"],"jsHooks":[]}</script><!--/html_preserve-->
 
 
 <a id='run'></a>
