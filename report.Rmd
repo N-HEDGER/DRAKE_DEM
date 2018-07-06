@@ -6,6 +6,19 @@ output:
     keep_md: yes
 ---
 
+# Index
+
+| Section | Description | Status |
+| --- | --- | --- |
+| [Initial plot](#plot) | A brief readme |
+| [Cleaning](#Cleaning) | Summary of data cleaning |
+| [Window](#Window) | Time window analysis |
+| [Timeseries](#Timeseries) | Time series analysis |
+| [Switching Analysis ](#Switching) | Analysis of switching behavior |
+
+***
+
+<a id='plot'></a>
 # Initial plotting.
 
 Summary plot of horizontal gaze position for a single observer.
@@ -15,12 +28,14 @@ library(drake)
 readd(PLOT)
 ```
 
+***
+
+<a id='Cleaning'></a>
 # Cleaning summary
 
 ### Trackloss Summary.
 
 Proportion trackloss for each observer.
-
 
 ```{r}
 tsummary=readd(CLEANED_FRAME)
@@ -37,7 +52,9 @@ The following trackloss criteria were applied. We excluded data from participant
 
 Using the above criteria `r tsummary$perc_removed` % of the data were removed.
 
+*** 
 
+<a id='Window'></a>
 # Time window analysis.
 
 Ascertain whether participants looked longer at one AOI versus another.
@@ -103,10 +120,12 @@ for (i in 1:length(modlist)){
 ```
 
 
+*** 
+
+<a id='Timeseries'></a>
 # Time series Analysis.
 
 Look at the timeseries of gaze bias.
-
 
 ### Plot of social bias as a function of time.
 
@@ -152,6 +171,9 @@ summary(get(modlist[i],tsdem))
 ```
 
 
+*** 
+
+<a id='Switching'></a>
 # Switching analysis
 
 ### Overall switching behavior
@@ -178,7 +200,7 @@ modlist=ls(switch)[str_detect(ls(switch), 'dmodelp')]
 
 
 for (i in 1:length(plotlist)){ 
-multiplot(get(plotlist1[i],switch),get(plotlist2[i],switch))
+multiplot(get(plotlist1[i],switch),get(plotlist2[i],switch),cols=2)
 print(get(modlist[i],switch))
 }
 

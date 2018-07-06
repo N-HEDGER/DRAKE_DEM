@@ -6,6 +6,19 @@ output:
     keep_md: yes
 ---
 
+# Index
+
+| Section | Description | Status |
+| --- | --- | --- |
+| [Initial plot](#plot) | A brief readme |
+| [Cleaning](#Cleaning) | Summary of data cleaning |
+| [Window](#Window) | Time window analysis |
+| [Timeseries](#Timeseries) | Time series analysis |
+| [Switching Analysis ](#Switching) | Analysis of switching behavior |
+
+***
+
+<a id='plot'></a>
 # Initial plotting.
 
 Summary plot of horizontal gaze position for a single observer.
@@ -18,12 +31,14 @@ readd(PLOT)
 
 ![](report_files/figure-html/content-1.png)<!-- -->
 
+***
+
+<a id='Cleaning'></a>
 # Cleaning summary
 
 ### Trackloss Summary.
 
 Proportion trackloss for each observer.
-
 
 
 ```r
@@ -60,7 +75,9 @@ The following trackloss criteria were applied. We excluded data from participant
 
 Using the above criteria 4.3903462 % of the data were removed.
 
+*** 
 
+<a id='Window'></a>
 # Time window analysis.
 
 Ascertain whether participants looked longer at one AOI versus another.
@@ -239,10 +256,12 @@ for (i in 1:length(modlist)){
 ```
 
 
+*** 
+
+<a id='Timeseries'></a>
 # Time series Analysis.
 
 Look at the timeseries of gaze bias.
-
 
 ### Plot of social bias as a function of time.
 
@@ -251,6 +270,12 @@ Look at the timeseries of gaze bias.
 ts=readd(TS_FRAME)
 
 ts$TSPLOT
+```
+
+```
+## Warning: Removed 314 rows containing non-finite values (stat_summary).
+
+## Warning: Removed 314 rows containing non-finite values (stat_summary).
 ```
 
 ![](report_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
@@ -322,14 +347,14 @@ summary(get(modlist[i],tsdem))
 ## Predictor:	 AQ 
 ## Formula:	 Prop ~ AQ 
 ## Null Distribution   ====== 
-##  Mean:		 -0.1363 
-##  2.5%:		 -18.0168 
-## 97.5%:		 17.6622 
+##  Mean:		 -0.7618 
+##  2.5%:		 -31.6453 
+## 97.5%:		 15.7593 
 ## Summary of Clusters ======
 ##   Cluster Direction SumStatistic StartTime EndTime Probability
-## 1       1  Negative    -2.190628      1100    1200       0.420
-## 2       2  Negative   -28.481566      2700    3900       0.028
-## 3       3  Negative   -37.558665      4800    6000       0.016
+## 1       1  Negative    -2.190628      1100    1200        0.35
+## 2       2  Negative   -28.481566      2700    3900        0.05
+## 3       3  Negative   -37.558665      4800    6000        0.01
 ```
 
 ![](report_files/figure-html/unnamed-chunk-10-2.png)<!-- -->
@@ -339,18 +364,21 @@ summary(get(modlist[i],tsdem))
 ## Predictor:	 EQ 
 ## Formula:	 Prop ~ EQ 
 ## Null Distribution   ====== 
-##  Mean:		 0.7169 
-##  2.5%:		 -16.8708 
-## 97.5%:		 22.2076 
+##  Mean:		 0.8271 
+##  2.5%:		 -19.8085 
+## 97.5%:		 20.5848 
 ## Summary of Clusters ======
 ##   Cluster Direction SumStatistic StartTime EndTime Probability
-## 1       1  Positive     2.096657      2600    2700       0.458
-## 2       2  Positive     2.014351      3400    3500       0.502
-## 3       3  Positive     4.513755      3700    3900       0.282
-## 4       4  Positive    56.626231      4000    6000       0.002
+## 1       1  Positive     2.096657      2600    2700        0.56
+## 2       2  Positive     2.014351      3400    3500        0.59
+## 3       3  Positive     4.513755      3700    3900        0.29
+## 4       4  Positive    56.626231      4000    6000        0.00
 ```
 
 
+*** 
+
+<a id='Switching'></a>
 # Switching analysis
 
 ### Overall switching behavior
@@ -379,6 +407,14 @@ print(switch$modelp)
 multiplot(switch$plotswitchall,switch$plotonseswitchall)
 ```
 
+```
+## Warning: Removed 5 rows containing non-finite values (stat_boxplot).
+```
+
+```
+## Warning: Removed 5 rows containing missing values (geom_point).
+```
+
 ![](report_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 
@@ -394,9 +430,17 @@ modlist=ls(switch)[str_detect(ls(switch), 'dmodelp')]
 
 
 for (i in 1:length(plotlist)){ 
-multiplot(get(plotlist1[i],switch),get(plotlist2[i],switch))
+multiplot(get(plotlist1[i],switch),get(plotlist2[i],switch),cols=2)
 print(get(modlist[i],switch))
 }
+```
+
+```
+## Warning: Removed 5 rows containing non-finite values (stat_boxplot).
+```
+
+```
+## Warning: Removed 5 rows containing missing values (geom_point).
 ```
 
 ![](report_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
@@ -413,6 +457,12 @@ print(get(modlist[i],switch))
 ## 3 FirstAOI:AQ  1 3.76 +     .05
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '+' 0.1 ' ' 1
+```
+
+```
+## Warning: Removed 5 rows containing non-finite values (stat_boxplot).
+
+## Warning: Removed 5 rows containing missing values (geom_point).
 ```
 
 ![](report_files/figure-html/unnamed-chunk-12-2.png)<!-- -->

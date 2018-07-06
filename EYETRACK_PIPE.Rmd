@@ -11,9 +11,11 @@ output:
 | Section | Description | Status |
 | --- | --- | --- |
 | [Description and Requirements](#Rules) | A brief readme |
-| [Imports and Variables](#import) | Load the required packages and set variables for the analysis |
+| [Imports](#import) | Load the required packages |
+| [Inputs](#inputs) | Set the variables required for analysis |
 | [Functions](#functions) | Functions for the pipeline |
 | [Define Workflow](#workflow) | Define pipeline |
+| [Run Workflow](#run) | Run pipeline |
 
 ***
 
@@ -23,23 +25,35 @@ output:
 
 Pipeline for analysing eyetracking data output from MATLAB experiment.
 
-i) The eventables ('summary.txt' files describing the events on each trial) output by MATLAB are read in.
-ii) These are then put alongside the corresponding cleaned eye-movement data (output from Grafix).
-iii) The demographic variables (EQ, AQ etc) are appended to the data for each participant.
-iv) The data for NT and ASC subjects are then put into one big dataframe.
-v) The gaze data are then coded in terms of which AOI they fall into.
-vi) Data are then re-formatted into eyetrackingR format.
-vii) The data are then cleaned according to the degree of trackloss you allow.
-viii) Three analysis are performed i) Window analysis ii) Time series/divergence analysis iii) Switching analysis. In each case, the demographic variables are defined as predictors.
-ix) A report is generated: 'report.html' including the output of the models and some plots.
+1. The eventables ('summary.txt' files describing the events on each trial) output by MATLAB are read in.
+2. These are then put alongside the corresponding cleaned eye-movement data (output from Grafix).
+3. The demographic variables (EQ, AQ etc) are appended to the data for each participant.
+4. The data for NT and ASC subjects are then put into one big dataframe.
+5. The gaze data are then coded in terms of which AOI they fall into.
+6. Data are then re-formatted into eyetrackingR format.
+7. The data are then cleaned according to the degree of trackloss you allow.
+8. Three analysis are performed i) Window analysis ii) Time series/divergence analysis iii) Switching analysis. In each case, the demographic variables are defined as predictors.
+9. A report is generated: 'report.html' including the output of the models and some plots.
+
+***
 
 ## Requirements
 
-i) A directory of 'summary files' - the .txt files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.
-ii) A directory of 'Grafix files' - these are the cleaned .csv files output from Grafix. Grafix only allows numeric names, so 001 for NT and 101 for ASC etc
-iii) An excel file containing demographic info. Rows are individual subjects, ordered in the same way as i). Columns are different demographic variables (EQ, AQ etc).
+1. You will need to install all the packages listed in the [following](#import) section.
+2. A directory of 'summary files' - the 'summary.txt' files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.
+3. A directory of 'Grafix files' - these are the cleaned .csv files output from Grafix. Grafix only allows numeric names, so 001 for NT and 101 for ASC etc
+4. An excel file containing demographic info. Rows are individual subjects, ordered in the same way as i). Columns are different demographic variables (EQ, AQ etc).
 
+***
 
+## Instructions 
+
+1. First set the [inputs](#inputs). This includes things like the path to your files, prefixes for files, AOI definitions, cleaning parameters and analysis parameters. 
+2. Then read in all the functions [functions](#functions)
+3. Then define the [pipeline](#workflow)
+4. Then [run the pipeline](#run)
+
+***
 
 <a id='import'></a>
 # Imports and Variables
@@ -59,10 +73,14 @@ require(phia)
 require(nlme)
 require(effects)
 require(stringr)
+require(webshot)
 ```
 
+***
+<a id='inputs'></a>
+# Set Variables
 
-### Set all the required variables and put them into environments
+### Create some environments
 
 ```{r environments,message=FALSE,warning=FALSE,error=FALSE}
 clean()
@@ -72,6 +90,9 @@ formatdef=new.env()
 cleandef=new.env()
 analysis=new.env()
 ```
+
+
+### Set all the required variables and put them into their environments.
 
 Paths and Prefixes
 
@@ -171,7 +192,7 @@ Analysis definitions
 assign("binlength",100,envir=analysis)
 
 # The repetitions for the bootsrappping
-assign("nreps",500,envir=analysis)
+assign("nreps",100,envir=analysis)
 
 # The onset time for switching analysis
 assign("onset_time",1100,envir=analysis)
@@ -181,6 +202,7 @@ assign("windowlength",100,envir=analysis)
 
 ```
 
+***
 <a id='functions'></a>
 # Functions
 
@@ -391,7 +413,7 @@ Prepares the data for EyetrackingR format.
 ```{r functions6,message=FALSE,warning=FALSE,error=FALSE}
 
 FORMAT <- function(FRAME,missing_dat) {
-  fprintf('Formatting for eyetrackingR',file='log.txt', append = TRUE)
+  fprintf('Formatting for eyetrackingR\n',file='log.txt', append = TRUE)
   FRAME$isN=ifelse(FRAME$X=="NaN" & FRAME$interp==0,1,0)
   FRAME$side=factor(FRAME$side,levels=c(1,2),labels=c("Social Left","Social Right"))
   
@@ -439,6 +461,7 @@ Cleans the data according to trackloss criteria
 ```{r functions8,message=FALSE,warning=FALSE,error=FALSE}
 CLEAN_TRACK=function(FRAME,partprop,trialprop){
   trackenv=new.env()
+  fprintf('Cleaning according to trackloss criteria.. \n',file='log.txt', append = TRUE)
   
   assign('trackloss_summary',trackloss_analysis(FRAME),envir=trackenv)
   
@@ -653,6 +676,8 @@ TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
 }
 ```
 
+***
+
 <a id='Workflow'></a>
 # Define pipeline
 
@@ -689,6 +714,12 @@ plan <- drake_plan(
 
 config <- drake_config(plan)
 vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only = 'TRUE',build_times = "none")
+
+```
+
+
+
+```{r pipelinerun,message=FALSE,warning=FALSE,error=FALSE}
 make(plan)
 ```
 

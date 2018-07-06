@@ -106,3 +106,4 @@ Binding the NT and ASC frames together
 Trimming off the first 1000.000000 msec of data 
 Trimming off anything after 6000.000000 msec 
 Defining AOIsFormatting for eyetrackingR
+Cleaning according to trackloss criteria.. 

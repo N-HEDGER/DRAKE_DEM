@@ -128,12 +128,7 @@ $(document).ready(function () {
 
 <div id="index" class="section level1">
 <h1>Index</h1>
-<table style="width:17%;">
-<colgroup>
-<col width="5%"></col>
-<col width="5%"></col>
-<col width="5%"></col>
-</colgroup>
+<table>
 <thead>
 <tr class="header">
 <th>Section</th>
@@ -148,18 +143,28 @@ $(document).ready(function () {
 <td></td>
 </tr>
 <tr class="even">
-<td><a href="#import">Imports and Variables</a></td>
-<td>Load the required packages and set variables for the analysis</td>
+<td><a href="#import">Imports</a></td>
+<td>Load the required packages</td>
 <td></td>
 </tr>
 <tr class="odd">
+<td><a href="#inputs">Inputs</a></td>
+<td>Set the variables required for analysis</td>
+<td></td>
+</tr>
+<tr class="even">
 <td><a href="#functions">Functions</a></td>
 <td>Functions for the pipeline</td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><a href="#workflow">Define Workflow</a></td>
 <td>Define pipeline</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><a href="#run">Run Workflow</a></td>
+<td>Run pipeline</td>
 <td></td>
 </tr>
 </tbody>
@@ -170,7 +175,7 @@ $(document).ready(function () {
 <div id="description" class="section level1">
 <h1>Description</h1>
 <p>Pipeline for analysing eyetracking data output from MATLAB experiment.</p>
-<ol style="list-style-type: lower-roman">
+<ol style="list-style-type: decimal">
 <li>The eventables (‘summary.txt’ files describing the events on each trial) output by MATLAB are read in.</li>
 <li>These are then put alongside the corresponding cleaned eye-movement data (output from Grafix).</li>
 <li>The demographic variables (EQ, AQ etc) are appended to the data for each participant.</li>
@@ -181,98 +186,56 @@ $(document).ready(function () {
 <li>Three analysis are performed i) Window analysis ii) Time series/divergence analysis iii) Switching analysis. In each case, the demographic variables are defined as predictors.</li>
 <li>A report is generated: ‘report.html’ including the output of the models and some plots.</li>
 </ol>
+<hr />
 <div id="requirements" class="section level2">
 <h2>Requirements</h2>
-<ol style="list-style-type: lower-roman">
-<li>A directory of ‘summary files’ - the .txt files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.</li>
+<ol style="list-style-type: decimal">
+<li>You will need to install all the packages listed in the <a href="#import">following</a> section.</li>
+<li>A directory of ‘summary files’ - the ‘summary.txt’ files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.</li>
 <li>A directory of ‘Grafix files’ - these are the cleaned .csv files output from Grafix. Grafix only allows numeric names, so 001 for NT and 101 for ASC etc</li>
 <li>An excel file containing demographic info. Rows are individual subjects, ordered in the same way as i). Columns are different demographic variables (EQ, AQ etc).</li>
 </ol>
+<hr />
+</div>
+<div id="instructions" class="section level2">
+<h2>Instructions</h2>
+<ol style="list-style-type: decimal">
+<li>First set the <a href="#inputs">inputs</a>. This includes things like the path to your files, prefixes for files, AOI definitions, cleaning parameters and analysis parameters.</li>
+<li>Then read in all the functions <a href="#functions">functions</a></li>
+<li>Then define the <a href="#workflow">pipeline</a></li>
+<li>Then <a href="#run">run the pipeline</a></li>
+</ol>
+<hr />
 <p><a id="import"></a> # Imports and Variables</p>
 </div>
 <div id="load-in-packages" class="section level2">
 <h2>Load in packages</h2>
-<pre class="r"><code>require(drake)</code></pre>
-<pre><code>## Loading required package: drake</code></pre>
-<pre class="r"><code>require(readr)</code></pre>
-<pre><code>## Loading required package: readr</code></pre>
-<pre class="r"><code>require(pracma)</code></pre>
-<pre><code>## Loading required package: pracma</code></pre>
-<pre><code>## Warning: package 'pracma' was built under R version 3.4.3</code></pre>
-<pre class="r"><code>require(xlsx)</code></pre>
-<pre><code>## Loading required package: xlsx</code></pre>
-<pre class="r"><code>require(ggplot2)</code></pre>
-<pre><code>## Loading required package: ggplot2</code></pre>
-<pre class="r"><code>require(eyetrackingR)</code></pre>
-<pre><code>## Loading required package: eyetrackingR</code></pre>
-<pre class="r"><code>require(lme4)</code></pre>
-<pre><code>## Loading required package: lme4</code></pre>
-<pre><code>## Loading required package: Matrix</code></pre>
-<pre><code>## 
-## Attaching package: 'Matrix'</code></pre>
-<pre><code>## The following objects are masked from 'package:pracma':
-## 
-##     expm, lu, tril, triu</code></pre>
-<pre><code>## The following object is masked from 'package:drake':
-## 
-##     expand</code></pre>
-<pre class="r"><code>require(afex)</code></pre>
-<pre><code>## Loading required package: afex</code></pre>
-<pre><code>## Loading required package: lsmeans</code></pre>
-<pre><code>## The 'lsmeans' package is being deprecated.
-## Users are encouraged to switch to 'emmeans'.
-## See help('transition') for more information, including how
-## to convert 'lsmeans' objects and scripts to work with 'emmeans'.</code></pre>
-<pre><code>## ************
-## Welcome to afex. For support visit: http://afex.singmann.science/</code></pre>
-<pre><code>## - Functions for ANOVAs: aov_car(), aov_ez(), and aov_4()
-## - Methods for calculating p-values with mixed(): 'KR', 'S', 'LRT', and 'PB'
-## - 'afex_aov' and 'mixed' objects can be passed to lsmeans() for follow-up tests
-## - Get and set global package options with: afex_options()
-## - Set orthogonal sum-to-zero contrasts globally: set_sum_contrasts()
-## - For example analyses see: browseVignettes(&quot;afex&quot;)
-## ************</code></pre>
-<pre><code>## 
-## Attaching package: 'afex'</code></pre>
-<pre><code>## The following object is masked from 'package:lme4':
-## 
-##     lmer</code></pre>
-<pre class="r"><code>require(phia)</code></pre>
-<pre><code>## Loading required package: phia</code></pre>
-<pre><code>## Loading required package: car</code></pre>
-<pre><code>## Warning: package 'car' was built under R version 3.4.3</code></pre>
-<pre><code>## 
-## Attaching package: 'car'</code></pre>
-<pre><code>## The following object is masked from 'package:pracma':
-## 
-##     logit</code></pre>
-<pre class="r"><code>require(nlme)</code></pre>
-<pre><code>## Loading required package: nlme</code></pre>
-<pre><code>## 
-## Attaching package: 'nlme'</code></pre>
-<pre><code>## The following object is masked from 'package:lme4':
-## 
-##     lmList</code></pre>
-<pre class="r"><code>require(effects)</code></pre>
-<pre><code>## Loading required package: effects</code></pre>
-<pre><code>## Loading required package: carData</code></pre>
-<pre><code>## 
-## Attaching package: 'carData'</code></pre>
-<pre><code>## The following objects are masked from 'package:car':
-## 
-##     Guyer, UN, Vocab</code></pre>
-<pre><code>## lattice theme set by effectsTheme()
-## See ?effectsTheme for details.</code></pre>
-<pre class="r"><code>require(stringr)</code></pre>
-<pre><code>## Loading required package: stringr</code></pre>
-<div id="set-all-the-required-variables-and-put-them-into-environments" class="section level3">
-<h3>Set all the required variables and put them into environments</h3>
+<pre class="r"><code>require(drake)
+require(readr)
+require(pracma)
+require(xlsx)
+require(ggplot2)
+require(eyetrackingR)
+require(lme4)
+require(afex)
+require(phia)
+require(nlme)
+require(effects)
+require(stringr)
+require(webshot)</code></pre>
+<hr />
+<p><a id="inputs"></a> # Set Variables</p>
+<div id="create-some-environments" class="section level3">
+<h3>Create some environments</h3>
 <pre class="r"><code>clean()
 const=new.env()
 AOIdef=new.env()
 formatdef=new.env()
 cleandef=new.env()
 analysis=new.env()</code></pre>
+</div>
+<div id="set-all-the-required-variables-and-put-them-into-their-environments." class="section level3">
+<h3>Set all the required variables and put them into their environments.</h3>
 <p>Paths and Prefixes</p>
 <pre class="r"><code># Path to the Grafix files.
 assign(&quot;Grafpath&quot;,&quot;/Users/nicholashedger/Google\ Drive/Grafix&quot;,envir=const)
@@ -343,13 +306,14 @@ assign(&quot;part_prop&quot;,1,envir=cleandef)</code></pre>
 assign(&quot;binlength&quot;,100,envir=analysis)
 
 # The repetitions for the bootsrappping
-assign(&quot;nreps&quot;,500,envir=analysis)
+assign(&quot;nreps&quot;,100,envir=analysis)
 
 # The onset time for switching analysis
 assign(&quot;onset_time&quot;,1100,envir=analysis)
 
 # The rolling window to use for switching analysis.
 assign(&quot;windowlength&quot;,100,envir=analysis)</code></pre>
+<hr />
 <p><a id="functions"></a> # Functions</p>
 <p>Multiplot function</p>
 <pre class="r"><code>multiplot &lt;- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
@@ -524,7 +488,7 @@ GET_ASC_GRAF&lt;- function(prefixgraf,pathgraf) {
 }</code></pre>
 <p>Prepares the data for EyetrackingR format.</p>
 <pre class="r"><code>FORMAT &lt;- function(FRAME,missing_dat) {
-  fprintf('Formatting for eyetrackingR',file='log.txt', append = TRUE)
+  fprintf('Formatting for eyetrackingR\n',file='log.txt', append = TRUE)
   FRAME$isN=ifelse(FRAME$X==&quot;NaN&quot; &amp; FRAME$interp==0,1,0)
   FRAME$side=factor(FRAME$side,levels=c(1,2),labels=c(&quot;Social Left&quot;,&quot;Social Right&quot;))
   
@@ -563,6 +527,7 @@ GET_ASC_GRAF&lt;- function(prefixgraf,pathgraf) {
 <p>Cleans the data according to trackloss criteria</p>
 <pre class="r"><code>CLEAN_TRACK=function(FRAME,partprop,trialprop){
   trackenv=new.env()
+  fprintf('Cleaning according to trackloss criteria.. \n',file='log.txt', append = TRUE)
   
   assign('trackloss_summary',trackloss_analysis(FRAME),envir=trackenv)
   
@@ -752,6 +717,7 @@ GET_ASC_GRAF&lt;- function(prefixgraf,pathgraf) {
   return(ts_env_switch)
   
 }</code></pre>
+<hr />
 <p><a id="Workflow"></a> # Define pipeline</p>
 <pre class="r"><code>setwd(const$basepath)
 

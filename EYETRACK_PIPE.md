@@ -11,9 +11,11 @@ output:
 | Section | Description | Status |
 | --- | --- | --- |
 | [Description and Requirements](#Rules) | A brief readme |
-| [Imports and Variables](#import) | Load the required packages and set variables for the analysis |
+| [Imports](#import) | Load the required packages |
+| [Inputs](#inputs) | Set the variables required for analysis |
 | [Functions](#functions) | Functions for the pipeline |
 | [Define Workflow](#workflow) | Define pipeline |
+| [Run Workflow](#run) | Run pipeline |
 
 ***
 
@@ -23,23 +25,35 @@ output:
 
 Pipeline for analysing eyetracking data output from MATLAB experiment.
 
-i) The eventables ('summary.txt' files describing the events on each trial) output by MATLAB are read in.
-ii) These are then put alongside the corresponding cleaned eye-movement data (output from Grafix).
-iii) The demographic variables (EQ, AQ etc) are appended to the data for each participant.
-iv) The data for NT and ASC subjects are then put into one big dataframe.
-v) The gaze data are then coded in terms of which AOI they fall into.
-vi) Data are then re-formatted into eyetrackingR format.
-vii) The data are then cleaned according to the degree of trackloss you allow.
-viii) Three analysis are performed i) Window analysis ii) Time series/divergence analysis iii) Switching analysis. In each case, the demographic variables are defined as predictors.
-ix) A report is generated: 'report.html' including the output of the models and some plots.
+1. The eventables ('summary.txt' files describing the events on each trial) output by MATLAB are read in.
+2. These are then put alongside the corresponding cleaned eye-movement data (output from Grafix).
+3. The demographic variables (EQ, AQ etc) are appended to the data for each participant.
+4. The data for NT and ASC subjects are then put into one big dataframe.
+5. The gaze data are then coded in terms of which AOI they fall into.
+6. Data are then re-formatted into eyetrackingR format.
+7. The data are then cleaned according to the degree of trackloss you allow.
+8. Three analysis are performed i) Window analysis ii) Time series/divergence analysis iii) Switching analysis. In each case, the demographic variables are defined as predictors.
+9. A report is generated: 'report.html' including the output of the models and some plots.
+
+***
 
 ## Requirements
 
-i) A directory of 'summary files' - the .txt files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.
-ii) A directory of 'Grafix files' - these are the cleaned .csv files output from Grafix. Grafix only allows numeric names, so 001 for NT and 101 for ASC etc
-iii) An excel file containing demographic info. Rows are individual subjects, ordered in the same way as i). Columns are different demographic variables (EQ, AQ etc).
+1. You will need to install all the packages listed in the [following](#import) section.
+2. A directory of 'summary files' - the 'summary.txt' files output from matlab - these should be named as follows e.g. NT_001, NT_002 etc for neurotypical and A_001 for ASC.
+3. A directory of 'Grafix files' - these are the cleaned .csv files output from Grafix. Grafix only allows numeric names, so 001 for NT and 101 for ASC etc
+4. An excel file containing demographic info. Rows are individual subjects, ordered in the same way as i). Columns are different demographic variables (EQ, AQ etc).
 
+***
 
+## Instructions 
+
+1. First set the [inputs](#inputs). This includes things like the path to your files, prefixes for files, AOI definitions, cleaning parameters and analysis parameters. 
+2. Then read in all the functions [functions](#functions)
+3. Then define the [pipeline](#workflow)
+4. Then [run the pipeline](#run)
+
+***
 
 <a id='import'></a>
 # Imports and Variables
@@ -49,214 +63,25 @@ iii) An excel file containing demographic info. Rows are individual subjects, or
 
 ```r
 require(drake)
-```
-
-```
-## Loading required package: drake
-```
-
-```r
 require(readr)
-```
-
-```
-## Loading required package: readr
-```
-
-```r
 require(pracma)
-```
-
-```
-## Loading required package: pracma
-```
-
-```
-## Warning: package 'pracma' was built under R version 3.4.3
-```
-
-```r
 require(xlsx)
-```
-
-```
-## Loading required package: xlsx
-```
-
-```r
 require(ggplot2)
-```
-
-```
-## Loading required package: ggplot2
-```
-
-```r
 require(eyetrackingR)
-```
-
-```
-## Loading required package: eyetrackingR
-```
-
-```r
 require(lme4)
-```
-
-```
-## Loading required package: lme4
-```
-
-```
-## Loading required package: Matrix
-```
-
-```
-## 
-## Attaching package: 'Matrix'
-```
-
-```
-## The following objects are masked from 'package:pracma':
-## 
-##     expm, lu, tril, triu
-```
-
-```
-## The following object is masked from 'package:drake':
-## 
-##     expand
-```
-
-```r
 require(afex)
-```
-
-```
-## Loading required package: afex
-```
-
-```
-## Loading required package: lsmeans
-```
-
-```
-## The 'lsmeans' package is being deprecated.
-## Users are encouraged to switch to 'emmeans'.
-## See help('transition') for more information, including how
-## to convert 'lsmeans' objects and scripts to work with 'emmeans'.
-```
-
-```
-## ************
-## Welcome to afex. For support visit: http://afex.singmann.science/
-```
-
-```
-## - Functions for ANOVAs: aov_car(), aov_ez(), and aov_4()
-## - Methods for calculating p-values with mixed(): 'KR', 'S', 'LRT', and 'PB'
-## - 'afex_aov' and 'mixed' objects can be passed to lsmeans() for follow-up tests
-## - Get and set global package options with: afex_options()
-## - Set orthogonal sum-to-zero contrasts globally: set_sum_contrasts()
-## - For example analyses see: browseVignettes("afex")
-## ************
-```
-
-```
-## 
-## Attaching package: 'afex'
-```
-
-```
-## The following object is masked from 'package:lme4':
-## 
-##     lmer
-```
-
-```r
 require(phia)
-```
-
-```
-## Loading required package: phia
-```
-
-```
-## Loading required package: car
-```
-
-```
-## Warning: package 'car' was built under R version 3.4.3
-```
-
-```
-## 
-## Attaching package: 'car'
-```
-
-```
-## The following object is masked from 'package:pracma':
-## 
-##     logit
-```
-
-```r
 require(nlme)
-```
-
-```
-## Loading required package: nlme
-```
-
-```
-## 
-## Attaching package: 'nlme'
-```
-
-```
-## The following object is masked from 'package:lme4':
-## 
-##     lmList
-```
-
-```r
 require(effects)
-```
-
-```
-## Loading required package: effects
-```
-
-```
-## Loading required package: carData
-```
-
-```
-## 
-## Attaching package: 'carData'
-```
-
-```
-## The following objects are masked from 'package:car':
-## 
-##     Guyer, UN, Vocab
-```
-
-```
-## lattice theme set by effectsTheme()
-## See ?effectsTheme for details.
-```
-
-```r
 require(stringr)
+require(webshot)
 ```
 
-```
-## Loading required package: stringr
-```
+***
+<a id='inputs'></a>
+# Set Variables
 
-
-### Set all the required variables and put them into environments
+### Create some environments
 
 
 ```r
@@ -267,6 +92,9 @@ formatdef=new.env()
 cleandef=new.env()
 analysis=new.env()
 ```
+
+
+### Set all the required variables and put them into their environments.
 
 Paths and Prefixes
 
@@ -367,7 +195,7 @@ Analysis definitions
 assign("binlength",100,envir=analysis)
 
 # The repetitions for the bootsrappping
-assign("nreps",500,envir=analysis)
+assign("nreps",100,envir=analysis)
 
 # The onset time for switching analysis
 assign("onset_time",1100,envir=analysis)
@@ -376,6 +204,7 @@ assign("onset_time",1100,envir=analysis)
 assign("windowlength",100,envir=analysis)
 ```
 
+***
 <a id='functions'></a>
 # Functions
 
@@ -586,7 +415,7 @@ Prepares the data for EyetrackingR format.
 
 ```r
 FORMAT <- function(FRAME,missing_dat) {
-  fprintf('Formatting for eyetrackingR',file='log.txt', append = TRUE)
+  fprintf('Formatting for eyetrackingR\n',file='log.txt', append = TRUE)
   FRAME$isN=ifelse(FRAME$X=="NaN" & FRAME$interp==0,1,0)
   FRAME$side=factor(FRAME$side,levels=c(1,2),labels=c("Social Left","Social Right"))
   
@@ -635,6 +464,7 @@ Cleans the data according to trackloss criteria
 ```r
 CLEAN_TRACK=function(FRAME,partprop,trialprop){
   trackenv=new.env()
+  fprintf('Cleaning according to trackloss criteria.. \n',file='log.txt', append = TRUE)
   
   assign('trackloss_summary',trackloss_analysis(FRAME),envir=trackenv)
   
@@ -846,6 +676,8 @@ TS_ANALYSIS_SWITCH=function(FRAME,onset_time,window_length,DEMOVARS){
 }
 ```
 
+***
+
 <a id='Workflow'></a>
 # Define pipeline
 
@@ -887,6 +719,9 @@ vis_drake_graph(config,layout='layout_with_sugiyama',direction='UD',targets_only
 
 <!--html_preserve--><div id="htmlwidget-ec897849c5c50a6f7846" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
 <script type="application/json" data-for="htmlwidget-ec897849c5c50a6f7846">{"x":{"nodes":{"id":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\""],"label":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\""],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"type":["object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","object","file"],"font.size":[20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20],"color":["#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","square"],"level":[1,1,1,1,2,1,2,1,3,3,4,5,6,7,7,8,8,8,8,9],"hover_label":["GET_NT_SUM(const$PrefixsumNT, const$Sumpath)","GET_NT_GRAF(const$PrefixgrafNT, const$Grafpath)","GET_ASC_SUM(const$PrefixsumASC, const$Sumpath)","GET_ASC_GRAF(const$PrefixgrafASC, const$Grafpath)","BIND_VARS(raw_data_NT, raw_data_NT_GRAF, const$colnames)","GET_FILEVEC(const$PrefixsumNT, const$Sumpath)","BIND_VARS(raw_data_ASC, raw_data_ASC_GRAF, const$colnames)","GET_FILEVEC(const$PrefixsumASC, const$Sumpath)","GET_DEMO(const$Demopath, const$PrefixdemoASC, bound_data_ASC,\nfilevec_ASC, const$DEMOVARS)","GET_DEMO(const$Demopath, const$PrefixdemoNT, bound_data_NT,\nfilevec_NT, const$DEMOVARS)","APPEND_DATA(DEMOFRAME_NT, DEMOFRAME_ASC, filevec_NT)","DEFINE_AOI(FRAME, AOIdef$rectlxmin, AOIdef$rectlxmax,\nAOIdef$rectlymin, AOIdef$rectlymax, AOIdef$rectrxmin,\nAOIdef$rectrxmax, AOIdef$rectrymin, AOIdef$rectrymax,\nformatdef$TRIML, formatdef$TRIMU)","FORMAT(AOI_FRAME, formatdef$missing_dat)","CLEAN_TRACK(EYETRACK_FRAME, cleandef$part_prop,\ncleandef$trial_prop)","MAKE_PLOT(EYETRACK_FRAME, AOIdef$rectlxmin, AOIdef$rectlxmax,\nAOIdef$rectlymin, AOIdef$rectlymax, AOIdef$rectrxmin,\nAOIdef$rectrxmax, AOIdef$rectrymin, AOIdef$rectrymax, AOIdef$resx,\nAOIdef$resy)","TS_ANALYSIS_DEMO(CLEANED_FRAME, analysis$binlength,\nconst$DEMOVARS, analysis$nreps)","TS_ANALYSIS(CLEANED_FRAME, analysis$binlength)","TS_ANALYSIS_SWITCH(CLEANED_FRAME, analysis$onset_time,\nanalysis$windowlength, const$DEMOVARS)","TIME_WINDOW(CLEANED_FRAME, const$DEMOVARS)","rmarkdown::render(knitr_in(\"report.Rmd\"), output_file =\nfile_out(\"report.html\"), quiet = TRUE)"],"x":[-1,-0.666666666666667,-0.333333333333333,0,-0.666666666666667,0.5,0.333333333333333,1,0.5,-0.333333333333333,0.5,0.5,0.5,0.166666666666667,0.833333333333333,-0.833333333333333,-0.5,-0.166666666666667,0.166666666666667,0.5],"y":[-1,-1,-1,-1,-0.75,-1,-0.75,-1,-0.5,-0.5,-0.25,0,0.25,0.5,0.5,0.75,0.75,0.75,0.75,1]},"edges":{"from":["raw_data_NT","raw_data_NT_GRAF","raw_data_ASC","raw_data_ASC_GRAF","bound_data_NT","filevec_NT","filevec_NT","bound_data_ASC","filevec_ASC","DEMOFRAME_ASC","DEMOFRAME_NT","FRAME","AOI_FRAME","EYETRACK_FRAME","EYETRACK_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME"],"to":["bound_data_NT","bound_data_NT","bound_data_ASC","bound_data_ASC","DEMOFRAME_NT","DEMOFRAME_NT","FRAME","DEMOFRAME_ASC","DEMOFRAME_ASC","FRAME","FRAME","AOI_FRAME","EYETRACK_FRAME","CLEANED_FRAME","PLOT","TS_DEMO_FRAME","TS_FRAME","TS_SWITCH_FRAME","WINDOW_FRAME","\"report.html\"","\"report.html\"","\"report.html\"","\"report.html\"","\"report.html\"","\"report.html\""],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"layout":{"hierarchical":{"enabled":true,"direction":"UD"}},"edges":{"smooth":false},"physics":{"stabilization":false},"interaction":{"navigationButtons":true,"hover":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":{"text":"Dependency graph","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Outdated","In progress","Failed","Imported","Missing","Object","Function","File"],"color":["#228B22","#000000","#FF7221","#AA0000","#1874CD","#9A32CD","#888888","#888888","#888888"],"shape":["dot","dot","dot","dot","dot","dot","dot","triangle","square"],"font.color":["black","black","black","black","black","black","black","black","black"],"font.size":[20,20,20,20,20,20,20,20,20],"id":[1,2,3,4,5,6,7,8,9]},"nodesToDataframe":true},"igraphlayout":{"type":"square"},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","events":{"hoverNode":"function(e){\n        var label_info = this.body.data.nodes.get({\n          fields: ['label', 'hover_label'],\n          filter: function (item) {\n            return item.id === e.node\n          },\n          returnType :'Array'\n        });\n        this.body.data.nodes.update({\n          id: e.node,\n          label : label_info[0].hover_label,\n          hover_label : label_info[0].label\n        });\n      }","blurNode":"function(e){\n        var label_info = this.body.data.nodes.get({\n          fields: ['label', 'hover_label'],\n          filter: function (item) {\n            return item.id === e.node\n          },\n          returnType :'Array'\n        });\n        this.body.data.nodes.update({\n          id: e.node,\n          label : label_info[0].hover_label,\n          hover_label : label_info[0].label\n        });\n      }"}},"evals":["events.hoverNode","events.blurNode"],"jsHooks":[]}</script><!--/html_preserve-->
+
+
+
 
 ```r
 make(plan)
