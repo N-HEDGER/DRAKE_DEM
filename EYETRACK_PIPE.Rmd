@@ -74,6 +74,7 @@ require(nlme)
 require(effects)
 require(stringr)
 require(webshot)
+require(knitr)
 ```
 
 ***
@@ -614,8 +615,8 @@ TS_ANALYSIS_DEMO=function(FRAME,binlength,DEMOVARS,nreps){
   clust_analysis_between <- analyze_time_clusters(df_timeclust_between, within_subj = FALSE, samples=nreps)
   clust_analysis_plot <- plot(clust_analysis_between)+ggtitle(DEMOVARS[i])+theme_classic()
   
-  assign(strcat('plot',DEMOVARS[i]),plot,envir=ts_env_demo)
-  assign(strcat('fit',DEMOVARS[i]),df_timeclust_between,envir=ts_env_demo)
+  assign(strcat('divplot',DEMOVARS[i]),plot,envir=ts_env_demo)
+  assign(strcat('divfit',DEMOVARS[i]),df_timeclust_between,envir=ts_env_demo)
   
   assign(strcat('clustplot',DEMOVARS[i]),clust_analysis_plot,envir=ts_env_demo)
   assign(strcat('clustfit',DEMOVARS[i]), clust_analysis_between,envir=ts_env_demo)

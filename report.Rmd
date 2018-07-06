@@ -10,7 +10,7 @@ output:
 
 | Section | Description | Status |
 | --- | --- | --- |
-| [Initial plot](#plot) | A brief readme |
+| [Initial plot](#plot) | Initial plot of a single observers data |
 | [Cleaning](#Cleaning) | Summary of data cleaning |
 | [Window](#Window) | Time window analysis |
 | [Timeseries](#Timeseries) | Time series analysis |
@@ -162,11 +162,17 @@ tsdem=readd(TS_DEMO_FRAME)
 
 plotlist=ls(tsdem)[str_detect(ls(tsdem), 'clustplot')]
 modlist=ls(tsdem)[str_detect(ls(tsdem), 'clustfit')]
+modlist2=ls(tsdem)[str_detect(ls(tsdem), 'divfit')]
 
-for (i in 1:length(plotlist)){
-print(get(plotlist[i],tsdem))
+plotlist2=ls(tsdem)[str_detect(ls(tsdem), 'divplot')]
+
+
+for (i in 1:length(plotlist)){ 
+multiplot(get(plotlist2[i],tsdem),get(plotlist[i],tsdem),cols=2)
 summary(get(modlist[i],tsdem))
+summary(get(modlist2[i],tsdem))
 }
+
 
 ```
 

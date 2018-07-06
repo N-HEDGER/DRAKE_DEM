@@ -10,7 +10,7 @@ output:
 
 | Section | Description | Status |
 | --- | --- | --- |
-| [Initial plot](#plot) | A brief readme |
+| [Initial plot](#plot) | Initial plot of a single observers data |
 | [Cleaning](#Cleaning) | Summary of data cleaning |
 | [Window](#Window) | Time window analysis |
 | [Timeseries](#Timeseries) | Time series analysis |
@@ -333,10 +333,15 @@ tsdem=readd(TS_DEMO_FRAME)
 
 plotlist=ls(tsdem)[str_detect(ls(tsdem), 'clustplot')]
 modlist=ls(tsdem)[str_detect(ls(tsdem), 'clustfit')]
+modlist2=ls(tsdem)[str_detect(ls(tsdem), 'divfit')]
 
-for (i in 1:length(plotlist)){
-print(get(plotlist[i],tsdem))
+plotlist2=ls(tsdem)[str_detect(ls(tsdem), 'divplot')]
+
+
+for (i in 1:length(plotlist)){ 
+multiplot(get(plotlist2[i],tsdem),get(plotlist[i],tsdem),cols=2)
 summary(get(modlist[i],tsdem))
+summary(get(modlist2[i],tsdem))
 }
 ```
 
@@ -355,6 +360,14 @@ summary(get(modlist[i],tsdem))
 ## 1       1  Negative    -2.190628      1100    1200        0.35
 ## 2       2  Negative   -28.481566      2700    3900        0.05
 ## 3       3  Negative   -37.558665      4800    6000        0.01
+## Test Type:	 lm 
+## Predictor:	 AQ 
+## Formula:	 Prop ~ AQ 
+## Summary of Clusters ======
+##   Cluster Direction SumStatistic StartTime EndTime
+## 1       1  Negative    -2.190628      1100    1200
+## 2       2  Negative   -28.481566      2700    3900
+## 3       3  Negative   -37.558665      4800    6000
 ```
 
 ![](report_files/figure-html/unnamed-chunk-10-2.png)<!-- -->
@@ -373,6 +386,15 @@ summary(get(modlist[i],tsdem))
 ## 2       2  Positive     2.014351      3400    3500        0.59
 ## 3       3  Positive     4.513755      3700    3900        0.29
 ## 4       4  Positive    56.626231      4000    6000        0.00
+## Test Type:	 lm 
+## Predictor:	 EQ 
+## Formula:	 Prop ~ EQ 
+## Summary of Clusters ======
+##   Cluster Direction SumStatistic StartTime EndTime
+## 1       1  Positive     2.096657      2600    2700
+## 2       2  Positive     2.014351      3400    3500
+## 3       3  Positive     4.513755      3700    3900
+## 4       4  Positive    56.626231      4000    6000
 ```
 
 
